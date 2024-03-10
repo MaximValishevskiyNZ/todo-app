@@ -1,21 +1,25 @@
 import React from "react"
 import './Footer.css'
-import TasksFilter from "../TasksFilter";
 import PropTypes from "prop-types";
+import TasksFilter from "../TasksFilter";
 
-export default function Footer({setFilter, tasks, setTasks}) {
-
-    const clearCompleted = () => {
-        setTasks(tasks.filter(task => !task.completed))
+class Footer extends React.Component {
+    clearCompleted() {
+        const {setTasks, tasks} = this.props
+        setTasks(tasks.filter(task => !task.completed));
     }
 
-    return (
-        <footer className="footer">
-            <span className="todo-count">{tasks.length} items left</span>
-            <TasksFilter setFilter={setFilter}/>
-            <button className="clear-completed" type="button" onClick={() => clearCompleted()}>Clear completed</button>
-        </footer>
-    )
+    render() {
+        const { setFilter, tasks } = this.props;
+
+        return (
+            <footer className="footer">
+                <span className="todo-count">{tasks.length} items left</span>
+                <TasksFilter setFilter={setFilter}/>
+                <button className="clear-completed" type="button" onClick={() => this.clearCompleted()}>Clear completed</button>
+            </footer>
+        )
+    }
 }
 
 Footer.propTypes = {
@@ -29,3 +33,5 @@ Footer.propTypes = {
         })
     ).isRequired
 }
+
+export default Footer;

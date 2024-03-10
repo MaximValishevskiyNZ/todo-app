@@ -3,26 +3,24 @@ import './TaskList.css';
 import PropTypes from "prop-types";
 import Task from "../Task";
 
-
-
-export default function TaskList({ tasks, onDelete, filter, setTasks }) {
-
-    return (
-        <ul className="todo-list">
-            { tasks.map((task) => {
-                switch (filter) {
-                    case 'Completed':
-                        return task.completed ? <Task task={task} onDelete={onDelete} tasks={tasks} setTasks={setTasks}/> : ''
-                    case 'Active':
-                        return !task.completed ? <Task task={task} onDelete={onDelete} tasks={tasks} setTasks={setTasks}/> : ''
-                    default:
-                        return <Task task={task} onDelete={onDelete} tasks={tasks} setTasks={setTasks}/>
-                }
-                }
-                )
-            }
-        </ul>
-    )
+class TaskList extends React.Component {
+    render() {
+        const { tasks, onDelete, filter, setTasks } = this.props;
+        return (
+            <ul className="todo-list">
+                {tasks.map((task) => {
+                    switch (filter) {
+                        case 'Completed':
+                            return task.completed ? <Task key={task.id} task={task} onDelete={onDelete} tasks={tasks} setTasks={setTasks}/> : null;
+                        case 'Active':
+                            return !task.completed ? <Task key={task.id} task={task} onDelete={onDelete} tasks={tasks} setTasks={setTasks}/> : null;
+                        default:
+                            return <Task key={task.id} task={task} onDelete={onDelete} tasks={tasks} setTasks={setTasks}/>;
+                    }
+                })}
+            </ul>
+        )
+    }
 }
 
 TaskList.propTypes = {
@@ -31,6 +29,7 @@ TaskList.propTypes = {
             id: PropTypes.string.isRequired,
             text: PropTypes.string.isRequired,
             completed: PropTypes.bool.isRequired,
+            added: PropTypes.instanceOf(Date).isRequired
         })
     ).isRequired,
     onDelete: PropTypes.func.isRequired,
@@ -38,3 +37,4 @@ TaskList.propTypes = {
     setTasks: PropTypes.func.isRequired,
 };
 
+export default TaskList;
