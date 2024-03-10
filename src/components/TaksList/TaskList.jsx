@@ -1,14 +1,40 @@
 import React from "react";
-import './TaskList.css'
+import './TaskList.css';
+import PropTypes from "prop-types";
 import Task from "../Task";
 
-function TaskList({ tasks }) {
-    console.log(tasks)
+
+
+export default function TaskList({ tasks, onDelete, filter, setTasks }) {
+
     return (
         <ul className="todo-list">
-            { tasks.map((task) => <Task task={task}/> )}
+            { tasks.map((task) => {
+                switch (filter) {
+                    case 'Completed':
+                        return task.completed ? <Task task={task} onDelete={onDelete} tasks={tasks} setTasks={setTasks}/> : ''
+                    case 'Active':
+                        return !task.completed ? <Task task={task} onDelete={onDelete} tasks={tasks} setTasks={setTasks}/> : ''
+                    default:
+                        return <Task task={task} onDelete={onDelete} tasks={tasks} setTasks={setTasks}/>
+                }
+                }
+                )
+            }
         </ul>
     )
 }
 
-export default TaskList
+TaskList.propTypes = {
+    tasks: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.string.isRequired,
+            text: PropTypes.string.isRequired,
+            completed: PropTypes.bool.isRequired,
+        })
+    ).isRequired,
+    onDelete: PropTypes.func.isRequired,
+    filter: PropTypes.string.isRequired,
+    setTasks: PropTypes.func.isRequired,
+};
+
