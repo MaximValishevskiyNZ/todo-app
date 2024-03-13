@@ -5,19 +5,10 @@ import Task from "../Task";
 
 class TaskList extends React.Component {
     render() {
-        const { tasks, onDelete, filter, setTasks } = this.props;
+        const { tasks, onDelete, setTasks } = this.props;
         return (
             <ul className="todo-list">
-                {tasks.map((task) => {
-                    switch (filter) {
-                        case 'Completed':
-                            return task.completed ? <Task key={task.id} task={task} onDelete={onDelete} tasks={tasks} setTasks={setTasks}/> : null;
-                        case 'Active':
-                            return !task.completed ? <Task key={task.id} task={task} onDelete={onDelete} tasks={tasks} setTasks={setTasks}/> : null;
-                        default:
-                            return <Task key={task.id} task={task} onDelete={onDelete} tasks={tasks} setTasks={setTasks}/>;
-                    }
-                })}
+                {tasks.map((task) => <Task key={task.id} task={task} onDelete={onDelete} tasks={tasks} setTasks={setTasks}/>)}
             </ul>
         )
     }
@@ -33,7 +24,6 @@ TaskList.propTypes = {
         })
     ).isRequired,
     onDelete: PropTypes.func.isRequired,
-    filter: PropTypes.string.isRequired,
     setTasks: PropTypes.func.isRequired,
 };
 

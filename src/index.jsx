@@ -4,6 +4,7 @@ import './index.css';
 import NewTaskForm from "./components/NewTaskForm";
 import TaskList from "./components/TaksList";
 import Footer from "./components/Footer";
+import Task from "./components/Task/index.jsx";
 
 const data = [
     {id: crypto.randomUUID(), text:"eat wax", completed:true, added: new Date() },
@@ -22,8 +23,21 @@ class App extends React.Component {
         this.deleteTask = this.deleteTask.bind(this);
     }
 
+    componentDidMount() {
+        setInterval(() => {
+            this.setState({
+                tasks: this.state.tasks.map(task => ({
+                    ...task,
+                    added: new Date(task.added)
+                }))
+            });
+        }, 10000);
+    }
+
+
+
     addTask(event) {
-        if (event.key === 'Enter') {
+        if (event.key === 'Enter' && !(/^\s*$/.test(event.target.value))) {
             const newTask = { id: crypto.randomUUID(), text: event.target.value, completed: false, added: new Date() };
             this.setState(prevState => ({
                 tasks: [...prevState.tasks, newTask]
@@ -40,6 +54,7 @@ class App extends React.Component {
 
     render() {
         const { tasks, filter } = this.state;
+        const filteredTasks = tasks.filter(task => filter === 'All' || task.completed === (filter === 'Completed'));
 
         return (
             <section className="todoapp">
@@ -49,7 +64,7 @@ class App extends React.Component {
                 </header>
                 <section className="main">
                     <ul className="todo-list">
-                        <TaskList tasks={tasks} onDelete={this.deleteTask} filter={filter} setTasks={(tasks) => this.setState({ tasks })}/>
+                        <TaskList tasks={filteredTasks} onDelete={this.deleteTask} filter={filter} setTasks={(tasks) => this.setState({ tasks })}/>
                     </ul>
                 </section>
                 <Footer setFilter={(filter) => this.setState({ filter })} tasks={tasks} setTasks={(tasks) => this.setState({ tasks })}/>
