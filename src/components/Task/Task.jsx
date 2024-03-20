@@ -34,6 +34,7 @@ class Task extends React.Component {
                         <span aria-hidden="true" />
                     </button>
                 </div>
+                <input type="text" className="edit"/>
             </li>
         );
     }
