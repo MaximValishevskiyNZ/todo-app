@@ -5,10 +5,10 @@ import Task from "../Task";
 
 class TaskList extends React.Component {
     render() {
-        const { tasks, onDelete, setTasks } = this.props;
+        const { tasks, onDelete, setTasks, editTask, switchTimer } = this.props;
         return (
             <ul className="todo-list">
-                {tasks.map((task) => <Task key={task.id} task={task} onDelete={onDelete} tasks={tasks} setTasks={setTasks}/>)}
+                {tasks.map((task) => <Task key={task.id} task={task} onDelete={onDelete} tasks={tasks} setTasks={setTasks} editTask={editTask} switchTimer={switchTimer}/>)}
             </ul>
         )
     }
