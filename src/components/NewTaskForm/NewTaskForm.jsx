@@ -1,21 +1,37 @@
-import React from "react";
+import React from 'react';
 import './NewTaskForm.css';
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
-export default function NewTaskForm({addTask}) {
+export default function NewTaskForm({ addTask }) {
+  const minutesPattern = /^([0-5]?\d)$/;
+  const secondsPattern = /^([0-5]?\d)$/;
 
-    return (
-        // eslint-disable-next-line jsx-a11y/no-autofocus
-
+  return (
     <form className="new-todo-form">
-        <input className="new-todo" placeholder="What needs to be done?" autoFocus onKeyDown={addTask}/>
-            <input className="new-todo-form__timer" placeholder="Min" autoFocus/>
-                <input className="new-todo-form__timer" placeholder="Sec" autoFocus/>
+      <input
+        className="new-todo"
+        placeholder="What needs to be done?"
+        autoFocus
+        onKeyDown={addTask}
+      />
+      <input
+        className="new-todo-form__timer"
+        placeholder="Min"
+        autoFocus
+        pattern={minutesPattern.source}
+        onKeyDown={addTask}
+      />
+      <input
+        className="new-todo-form__timer"
+        placeholder="Sec"
+        autoFocus
+        pattern={secondsPattern.source}
+        onKeyDown={addTask}
+      />
     </form>
-
-    )
+  );
 }
 
 NewTaskForm.propTypes = {
-    addTask: PropTypes.func.isRequired
-}
+  addTask: PropTypes.func.isRequired,
+};
