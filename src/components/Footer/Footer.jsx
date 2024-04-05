@@ -3,43 +3,40 @@ import './Footer.css';
 import PropTypes from 'prop-types';
 import TasksFilter from '../TasksFilter';
 
-class Footer extends React.Component {
-  clearCompleted() {
-    const { setTasks, tasks } = this.props;
-    setTasks(tasks.filter((task) => !task.completed));
-  }
+const Footer = ({ setFilter, tasks, setTasks, filter }) => {
+    const clearCompleted = () => {
+        setTasks(tasks.filter((task) => !task.completed));
+    };
 
-  render() {
-    const { setFilter, tasks, filter } = this.props;
+    const activeTasks = tasks.filter((task) => !task.completed);
 
     return (
-      <footer className="footer">
-        <span className="todo-count">
-          {tasks.filter((item) => !item.completed).length} items left
-        </span>
-        <TasksFilter setFilter={setFilter} filter={filter} />
-        <button
-          className="clear-completed"
-          type="button"
-          onClick={() => this.clearCompleted()}
-        >
-          Clear completed
-        </button>
-      </footer>
+        <footer className="footer">
+      <span className="todo-count">
+        <strong>{activeTasks.length}</strong> item
+          {activeTasks.length !== 1 ? 's' : ''} left
+      </span>
+            <TasksFilter setFilter={setFilter} filter={filter} />
+            {tasks.some((task) => task.completed) && (
+                <button className="clear-completed" onClick={clearCompleted}>
+                    Clear completed
+                </button>
+            )}
+        </footer>
     );
-  }
-}
+};
 
 Footer.propTypes = {
-  setFilter: PropTypes.func.isRequired,
-  setTasks: PropTypes.func.isRequired,
-  tasks: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      text: PropTypes.string.isRequired,
-      completed: PropTypes.bool.isRequired,
-    }),
-  ).isRequired,
+    setFilter: PropTypes.func.isRequired,
+    tasks: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.string.isRequired,
+            text: PropTypes.string.isRequired,
+            completed: PropTypes.bool.isRequired,
+        })
+    ).isRequired,
+    setTasks: PropTypes.func.isRequired,
+    filter: PropTypes.string.isRequired,
 };
 
 export default Footer;

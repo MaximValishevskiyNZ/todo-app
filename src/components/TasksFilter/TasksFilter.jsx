@@ -2,55 +2,47 @@ import React from 'react';
 import './TasksFilter.css';
 import PropTypes from 'prop-types';
 
-class TasksFilter extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleFilter = this.handleFilter.bind(this);
-  }
+const TasksFilter = ({ setFilter, filter }) => {
+  const handleFilter = (f) => {
+    setFilter(f);
+  };
 
-  handleFilter(filter) {
-    const { setFilter } = this.props;
-    setFilter(filter);
-  }
-
-  render() {
-    const { filter } = this.props;
-    return (
+  return (
       <ul className="filters">
         <li>
           <button
-            className={filter === 'All' ? 'selected' : ''}
-            type="button"
-            onClick={() => this.handleFilter('All')}
+              className={filter === 'All' ? 'selected' : ''}
+              type="button"
+              onClick={() => handleFilter('All')}
           >
             All
           </button>
         </li>
         <li>
           <button
-            className={filter === 'Active' ? 'selected' : ''}
-            type="button"
-            onClick={() => this.handleFilter('Active')}
+              className={filter === 'Active' ? 'selected' : ''}
+              type="button"
+              onClick={() => handleFilter('Active')}
           >
             Active
           </button>
         </li>
         <li>
           <button
-            className={filter === 'Completed' ? 'selected' : ''}
-            type="button"
-            onClick={() => this.handleFilter('Completed')}
+              className={filter === 'Completed' ? 'selected' : ''}
+              type="button"
+              onClick={() => handleFilter('Completed')}
           >
             Completed
           </button>
         </li>
       </ul>
-    );
-  }
-}
+  );
+};
 
 TasksFilter.propTypes = {
   setFilter: PropTypes.func.isRequired,
+  filter: PropTypes.string.isRequired,
 };
 
 export default TasksFilter;

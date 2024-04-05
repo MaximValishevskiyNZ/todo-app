@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import NewTaskForm from './components/NewTaskForm';
@@ -32,70 +32,62 @@ const data = [
   },
 ];
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      tasks: data,
-      filter: 'All',
-    };
-    this.addTask = this.addTask.bind(this);
-    this.deleteTask = this.deleteTask.bind(this);
-    this.editTask = this.editTask.bind(this);
-    this.switchTimer = this.switchTimer.bind(this);
-  }
+function App() {
+  const [tasks, setTasks] = useState(data);
+  const [filter, setFilter] = useState('All');
 
-  componentDidMount() {
-    setInterval(() => {
-      this.setState((prevState) => ({
-        tasks: prevState.tasks.map((task) => {
-          const { hours, minutes, seconds } = this.getHoursMinutesSeconds(
-            task.time,
-          );
-          const newTime = new Date(
-            task.time.getFullYear(),
-            task.time.getMonth(),
-            task.time.getDate(),
-            hours,
-            minutes,
-            seconds - 1,
-          );
-          return {
-            ...task,
-            time: task.isRunning
-              ? newTime < new Date(0)
-                ? new Date(0)
-                : newTime
-              : task.time,
-            added: new Date(task.added),
-          };
-        }),
-      }));
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTasks((prevTasks) =>
+          prevTasks.map((task) => {
+            const { hours, minutes, seconds } = getHoursMinutesSeconds(task.time);
+            const newTime = new Date(
+                task.time.getFullYear(),
+                task.time.getMonth(),
+                task.time.getDate(),
+                hours,
+                minutes,
+                seconds - 1
+            );
+            return {
+              ...task,
+              time: task.isRunning
+                  ? newTime < new Date(0)
+                      ? new Date(0)
+                      : newTime
+                  : task.time,
+              added: new Date(task.added),
+            };
+          })
+      );
     }, 1000);
-  }
 
-  getHoursMinutesSeconds(dateObj) {
+    return () => clearInterval(interval);
+  }, []);
+
+  const getHoursMinutesSeconds = (dateObj) => {
     const hours = dateObj.getHours();
     const minutes = dateObj.getMinutes();
     const seconds = dateObj.getSeconds();
     return { hours, minutes, seconds };
-  }
+  };
 
-  switchTimer(id) {
-    const newList = this.state.tasks.map((item) =>
-      item.id === id ? { ...item, isRunning: !item.isRunning } : item,
+  const switchTimer = (id) => {
+    setTasks((prevTasks) =>
+        prevTasks.map((item) =>
+            item.id === id ? { ...item, isRunning: !item.isRunning } : item
+        )
     );
-    this.setState({ tasks: newList });
-  }
+  };
 
-  addTask(event) {
+  const addTask = (event) => {
     if (event.key === 'Enter' && !/^\s*$/.test(event.target.value)) {
       const minutesInput = event.target.parentNode.querySelector(
-        '.new-todo-form__timer',
+          '.new-todo-form__timer'
       );
       const todoInput = event.target.parentNode.querySelector('.new-todo');
       const secondsInput = event.target.parentNode.querySelectorAll(
-        '.new-todo-form__timer',
+          '.new-todo-form__timer'
       )[1];
 
       const minutes = parseInt(minutesInput.value || '0', 10);
@@ -113,9 +105,7 @@ class App extends React.Component {
           time,
           isRunning: false,
         };
-        this.setState((prevState) => ({
-          tasks: [...prevState.tasks, newTask],
-        }));
+        setTasks((prevTasks) => [...prevTasks, newTask]);
         todoInput.value = '';
         minutesInput.value = '';
         secondsInput.value = '';
@@ -123,55 +113,50 @@ class App extends React.Component {
         alert('Пожалуйста, введите ненулевое значение для минут или секунд.');
       }
     }
-  }
+  };
 
-  deleteTask(taskId) {
-    this.setState((prevState) => ({
-      tasks: prevState.tasks.filter((task) => task.id !== taskId),
-    }));
-  }
+  const deleteTask = (taskId) => {
+    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
+  };
 
-  editTask(t, id) {
+  const editTask = (t, id) => {
     if (t.key === 'Enter') {
-      const newList = this.state.tasks.map((item) =>
-        item.id === id ? { ...item, text: t.target.value } : item,
+      setTasks((prevTasks) =>
+          prevTasks.map((item) =>
+              item.id === id ? { ...item, text: t.target.value } : item
+          )
       );
-      this.setState({ tasks: newList });
       t.target.value = '';
       return true;
     }
-  }
+  };
 
-  render() {
-    const { tasks, filter } = this.state;
-
-    return (
+  return (
       <section className="todoapp">
         <header className="header">
           <h1>todos</h1>
-          <NewTaskForm addTask={this.addTask} />
+          <NewTaskForm addTask={addTask} />
         </header>
         <section className="main">
           <ul className="todo-list">
             <TaskList
-              tasks={tasks}
-              onDelete={this.deleteTask}
-              filter={filter}
-              setTasks={(tasks) => this.setState({ tasks })}
-              editTask={this.editTask}
-              switchTimer={this.switchTimer}
+                tasks={tasks}
+                onDelete={deleteTask}
+                filter={filter}
+                setTasks={setTasks}
+                editTask={editTask}
+                switchTimer={switchTimer}
             />
           </ul>
         </section>
         <Footer
-          setFilter={(filter) => this.setState({ filter })}
-          tasks={tasks}
-          setTasks={(tasks) => this.setState({ tasks })}
-          filter={filter}
+            setFilter={setFilter}
+            tasks={tasks}
+            setTasks={setTasks}
+            filter={filter}
         />
       </section>
-    );
-  }
+  );
 }
 
 const root = createRoot(document.getElementById('root'));
